@@ -1,0 +1,15 @@
+*.swn
+*.swp
+*.swo
+*~
+*#
+*#*
+.DS_Store
+.DS_Store?
+
+.rvmrc
+.ruby-version
+.ruby-gemset
+.rspec
+
+Gemfile.lock
