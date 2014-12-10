@@ -47,7 +47,7 @@ module Net
         begin
           conn = Connection.new(opts)
           conn.open_socket()
-          request = ConnectPacket.new(:data => "(CONNECT_DATA=(COMMAND=STATUS))")
+          request = ConnectPacket.new(:data => "(CONNECT_DATA=(COMMAND=STATUS)(VERSION=186647552))")
 
           status_response_raw = ""
           begin
@@ -58,6 +58,8 @@ module Net
             # a data length that is greater than the available data.
           end
 
+          response = conn.send_and_receive(ResendPacket.new())
+          status_response_raw += response.data
           # Successful responses are typically spread across multiple Data packets.
           while ( response = conn.receive_tns_packet() )
             break unless response.is_a?(DataPacket)
