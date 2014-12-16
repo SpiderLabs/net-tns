@@ -61,6 +61,10 @@ module Net
           raise Net::TNS::Exceptions::TNSException.new( "Unknown TNS packet type: #{header.packet_type}" )
         end
 
+        unless packet_raw.length == header.packet_length
+          raise Net::TNS::Exceptions::ProtocolException
+        end
+
         new_packet = payload_class.read( packet_raw )
         return new_packet
       end
