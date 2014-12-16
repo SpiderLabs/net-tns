@@ -140,7 +140,7 @@ module Net
 
       def resend_last_tns_packet
         if @tns_last_sent_packet.nil?
-          raise Exceptions::TnsException.new( "Resend received without a packet to resend" )
+          raise Exceptions::TNSException.new( "Resend received without a packet to resend" )
         end
         send_tns_packet( @tns_last_sent_packet )
       end
@@ -154,7 +154,7 @@ module Net
       # @return [Net::TNS::Packet]
       # @raise [Net::TNS::Exceptions::RefuseMessageReceived] If the other side
       #   sent TNS refuse message.
-      # @raise [Net::TNS::Exceptions::TnsException] If another unexpected
+      # @raise [Net::TNS::Exceptions::TNSException] If another unexpected
       #   state or action occurs.
       def receive_tns_packet( waiting_for_error_message = false )
         # This is structured as a loop in order to handle messages (e.g. Resends)
@@ -167,7 +167,7 @@ module Net
 
           receive_count += 1
           if ( receive_count >= 3 )
-            raise Exceptions::TnsException.new( "Maximum receive attempts exceeded - too many Resends received." )
+            raise Exceptions::TNSException.new( "Maximum receive attempts exceeded - too many Resends received." )
           end
 
           # Try to receive a TNS packet

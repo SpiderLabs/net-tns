@@ -58,7 +58,7 @@ module Net
         packet_raw = header_raw + payload_raw
 
         unless payload_class = @@tns_packet_classes[ header.packet_type ]
-          raise Net::TNS::Exceptions::TnsException.new( "Unknown TNS packet type: #{header.packet_type}" )
+          raise Net::TNS::Exceptions::TNSException.new( "Unknown TNS packet type: #{header.packet_type}" )
         end
 
         new_packet = payload_class.read( packet_raw )

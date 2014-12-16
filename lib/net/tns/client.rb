@@ -10,7 +10,7 @@ module Net
           return true
         rescue Exceptions::ConnectionClosed
           return false
-        rescue Exceptions::TnsException
+        rescue Exceptions::TNSException
           return true
         ensure
           conn.close_socket() unless conn.nil?

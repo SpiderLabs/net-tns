@@ -1,22 +1,22 @@
 module Net::TNS
   module Exceptions
-    class TnsException < StandardError
+    class TNSException < StandardError
     end
 
-    class ProtocolException < TnsException
+    class ProtocolException < TNSException
     end
 
 
-    class ReceiveTimeoutExceeded < TnsException
+    class ReceiveTimeoutExceeded < TNSException
     end
 
-    class ConnectionClosed < TnsException
+    class ConnectionClosed < TNSException
     end
 
-    class RefuseMessageReceived < TnsException
+    class RefuseMessageReceived < TNSException
     end
 
-    class RedirectMessageReceived < TnsException
+    class RedirectMessageReceived < TNSException
       attr_reader :new_port
       attr_reader :new_host
 
