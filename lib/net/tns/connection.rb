@@ -13,7 +13,7 @@ module Net
 
         @socket = nil
         @socket_opts = {}
-        socket_opts_keys = [:host, :port, :get_socket_callback, :close_socket_callback]
+        socket_opts_keys = [:host, :port, :get_socket_callback]
         socket_opts_keys.each {|key| @socket_opts[key] = opts.delete(key) if opts.has_key?(key)}
 
         raise ArgumentError.new("Unrecognized options: #{opts.keys}") unless opts.empty?
@@ -27,8 +27,8 @@ module Net
         close_socket()
 
         if (host = @socket_opts[:host]) && (port = @socket_opts[:port])
-          if @socket_opts.has_key?(:get_socket_callback) || @socket_opts.has_key?(:close_socket_callback)
-            raise ArgumentError.new("Cannot specify :host/:port with :get_socket_callback/:close_socket_callback")
+          if @socket_opts.has_key?(:get_socket_callback)
+            raise ArgumentError.new("Cannot specify :host/:port with :get_socket_callback")
           end
 
           require "socket"
@@ -38,7 +38,7 @@ module Net
           Net::TNS.logger.info("Calling get-socket callback for new socket")
           @socket = socket_cb.call()
         else
-          raise ArgumentError.new("No valid options for socket creation. Need :host and :port, or :get_socket_callback (:close_socket_callback optional)")
+          raise ArgumentError.new("No valid options for socket creation. Need :host and :port, or :get_socket_callback")
         end
 
         return
@@ -50,16 +50,9 @@ module Net
       def close_socket
         Net::TNS.logger.debug("Connection#close_socket called")
         begin
-          unless @socket.nil?
-            if close_cb = @socket_opts[:close_socket_callback]
-              Net::TNS.logger.info("Calling close-socket callback to close socket")
-              close_cb.call(@socket)
-            else
-              unless @socket.closed?
-                Net::TNS.logger.info("Closing socket")
-                @socket.close
-              end
-            end
+          unless @socket.nil? or @socket.closed?
+            Net::TNS.logger.info("Closing socket")
+            @socket.close
           end
         ensure
           @socket = nil

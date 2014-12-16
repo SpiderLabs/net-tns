@@ -6,7 +6,7 @@ module Net
     class Client
       def connect(opts={})
         socket_opts = {}
-        socket_opts_keys = [:host, :port, :get_socket_callback, :close_socket_callback]
+        socket_opts_keys = [:host, :port, :get_socket_callback]
         socket_opts_keys.each {|key| socket_opts[key] = opts.delete(key) if opts.has_key?(key)}
 
         connect_opts = {}
