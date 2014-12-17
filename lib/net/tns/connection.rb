@@ -7,16 +7,17 @@ module Net
       attr_reader :tns_protocol_version
 
       def initialize(opts={})
-        opts = {
-          :port => 1521,
-        }.merge(opts)
-
         @socket = nil
-        @socket_opts = {}
-        socket_opts_keys = [:host, :port, :get_socket_callback]
-        socket_opts_keys.each {|key| @socket_opts[key] = opts.delete(key) if opts.has_key?(key)}
+
+        @host = opts.delete(:host)
+        @port = opts.delete(:port) || 1521
+        @new_socket_proc = opts.delete(:new_socket_proc)
 
         raise ArgumentError.new("Unrecognized options: #{opts.keys}") unless opts.empty?
+
+        if @host.nil? == @new_socket_proc.nil?
+          raise ArgumentError.new("Invalid socket options. Need :host and :port, OR :new_socket_proc")
+        end
       end
 
       # This is a low-level function to directly open a socket for this connection.
@@ -26,19 +27,15 @@ module Net
         Net::TNS.logger.debug("Connection#open_socket called")
         close_socket()
 
-        if (host = @socket_opts[:host]) && (port = @socket_opts[:port])
-          if @socket_opts.has_key?(:get_socket_callback)
-            raise ArgumentError.new("Cannot specify :host/:port with :get_socket_callback")
-          end
-
+        if @host
           require "socket"
-          Net::TNS.logger.info("Creating new TCPSocket for #{host}:#{port}")
-          @socket = TCPSocket.new(host, port)
-        elsif socket_cb = @socket_opts[:get_socket_callback]
-          Net::TNS.logger.info("Calling get-socket callback for new socket")
-          @socket = socket_cb.call()
+          Net::TNS.logger.info("Creating new TCPSocket for #{@host}:#{port}")
+          @socket = TCPSocket.new(@host, port)
+        elsif @new_socket_proc
+          Net::TNS.logger.info("Calling new-socket proc for new socket")
+          @socket = @new_socket_proc.call()
         else
-          raise ArgumentError.new("No valid options for socket creation. Need :host and :port, or :get_socket_callback")
+          raise ArgumentError.new("Invalid socket options")
         end
 
         return
