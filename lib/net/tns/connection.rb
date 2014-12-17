@@ -29,8 +29,8 @@ module Net
 
         if @host
           require "socket"
-          Net::TNS.logger.info("Creating new TCPSocket for #{@host}:#{port}")
-          @socket = TCPSocket.new(@host, port)
+          Net::TNS.logger.info("Creating new TCPSocket for #{@host}:#{@port}")
+          @socket = TCPSocket.new(@host, @port)
         elsif @new_socket_proc
           Net::TNS.logger.info("Calling new-socket proc for new socket")
           @socket = @new_socket_proc.call()
