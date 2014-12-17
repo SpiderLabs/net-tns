@@ -47,4 +47,4 @@ module Net
 end
 
 require "pathname"
-Dir.glob("#{Pathname.new(__FILE__).dirname}/messages/**/*.rb") { |file| require file }
+Dir.glob("#{Pathname.new(__FILE__).dirname}/messages/*.rb") { |file| require file }
