@@ -6,7 +6,7 @@ module Net
     class Client
       def connect(opts={})
         socket_opts = {}
-        socket_opts_keys = [:host, :port]
+        socket_opts_keys = [:host, :port, :get_socket_callback]
         socket_opts_keys.each {|key| socket_opts[key] = opts.delete(key) if opts.has_key?(key)}
 
         connect_opts = {}
@@ -28,14 +28,14 @@ module Net
       end
 
       def authenticate( username, password )
-        pre_auth_request = get_pre_auth_request( username )
-
-        pre_auth_response_raw = @tti_conn.send_and_receive(pre_auth_request)
-        pre_auth_response = PreAuthenticationResponse.read(pre_auth_response_raw)
-
-        auth_request = get_auth_request(username, password, pre_auth_response)
-
         begin
+          pre_auth_request = get_pre_auth_request( username )
+
+          pre_auth_response_raw = @tti_conn.send_and_receive(pre_auth_request)
+          pre_auth_response = PreAuthenticationResponse.read(pre_auth_response_raw)
+
+          auth_request = get_auth_request(username, password, pre_auth_response)
+
           @tti_conn.send_and_receive(auth_request)
         rescue Exceptions::ErrorMessageReceived => error
           case error.error_code

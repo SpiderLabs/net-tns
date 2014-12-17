@@ -79,7 +79,7 @@ module Net
         while ( true )
           receive_count += 1
           if ( receive_count >= 3 )
-            raise Exceptions::TnsException.new( "Maximum receive attempts exceeded - too many Markers received." )
+            raise Exceptions::TNSException.new( "Maximum receive attempts exceeded - too many Markers received." )
           end
 
           Net::TTI.logger.debug("Attempting to receive packet (try ##{receive_count})")
