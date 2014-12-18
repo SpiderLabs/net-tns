@@ -16,7 +16,7 @@ Net::TNS was written for and has been most tested with Ruby 2. The specs pass on
 
 ## Use
 
-Because TNS and TTI are highly related (and not very useful without the other), they are both implemented in this library, although in separate namespaces (```Net::TNS``` and ```Net::TTI```).  ```require "net/tti"``` is sufficient to load both protocols (```require "net/tns"``` will only load the TNS implementation).
+Because TNS and TTI are highly related (and not very useful without the other), they are both implemented in this library, although in separate namespaces, Net::TNS and Net::TTI (```require "net/tti"``` is sufficient to load both protocols, while ```require "net/tns"``` will only load the TNS implementation).
 
 Each namespace includes a Client class, which provides access to the essential functionality for that protocol.
 
@@ -25,12 +25,14 @@ Examples:
 #### Get the version of an Oracle DB server
 
 ```ruby
+require "net/tns" # require "net/tti" would work as well
 Net::TNS::Client.get_version(:host => "10.0.0.10") # => "11.2.0.2.0"
 ```
 
 #### Try authenticating to a server
 
 ```ruby
+require "net/tti" # requiring TTI is necessary to get the higher-level functionality
 tti_client = Net::TTI::Client.new
 tti_client.connect( :host => "10.0.0.10", :sid => "ORCL" )
 tti_client.authenticate( "jsmith", "bananas" ) # => true/false
