@@ -29,14 +29,16 @@ module SpecHelpers
     class SocketClosed < StandardError; end
     class NoMoreData < StandardError; end
 
-    attr_accessor :dst_host
-    attr_accessor :dst_port
     def initialize( host="127.0.0.1", port=1521 )
       @dst_host = host
       @dst_port = port
       @io_out = StringIO.new()
       @io_in = StringIO.new()
       @closed = false
+    end
+
+    def peeraddr
+      return [nil, @dst_port, nil, @dst_host]
     end
 
     # Socket-like functions
