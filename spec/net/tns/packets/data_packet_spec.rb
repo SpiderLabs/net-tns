@@ -6,12 +6,12 @@ module Net
       let(:tns_type) {6}
 
       context "with packets from the server" do
-        context "with a protocol negotiation response" do
+        context "with an ANO negotiation response" do
           let(:field_values) {{
             :flags => 0x0000,
             :data => raw_packet[10..-1]
           }}
-          let(:raw_packet) {TnsSpecHelper.read_message('data_proto_nego_response.raw')}
+          let(:raw_packet) {TnsSpecHelper.read_message('ano_negotiation_response.raw')}
 
           it_should_behave_like "a TNS packet class"
           it_should_behave_like "a TNS packet that can be properly received and parsed"
@@ -30,12 +30,12 @@ module Net
       end
 
       context "with packets from the client" do
-        context "with a protocol negotiation request" do
+        context "with an ANO negotiation request" do
           let(:field_values) {{
             :flags => 0x0000,
             :data => raw_packet[10..-1]
           }}
-          let(:raw_packet) {TnsSpecHelper.read_message('data_proto_nego_request.raw')}
+          let(:raw_packet) {TnsSpecHelper.read_message('ano_negotiation_request.raw')}
 
           it_should_behave_like "a TNS packet class"
           it_should_behave_like "a TNS packet that can be properly created and sent"
