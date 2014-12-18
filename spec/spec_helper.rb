@@ -65,7 +65,7 @@ module SpecHelpers
 
     # Administrative functions
     def _written_data
-      return @io_out.string.dup
+      return @io_out.string.dup.force_encoding("BINARY")
     end
 
     def _clear_written_data!
@@ -74,7 +74,7 @@ module SpecHelpers
 
     def _queue_response(data)
       data = data.to_binary_s if data.respond_to?(:to_binary_s)
-      @io_in.string << data
+      @io_in.string << data.force_encoding("BINARY")
     end
 
     def _has_unread_data?
