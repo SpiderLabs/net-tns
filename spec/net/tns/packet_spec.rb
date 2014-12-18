@@ -44,7 +44,7 @@ module Net::TNS
           subject.packet_length = test_info[:length] unless test_info[:length].nil?
           subject.packet_type = test_info[:packet_type_code] unless test_info[:packet_type_code].nil?
 
-          expect(subject.to_binary_s).to eql_binary_string( test_info[:binary_string] )
+          expect(subject).to eql_binary_string( test_info[:binary_string] )
         end
 
         context "when parsing a binary string" do

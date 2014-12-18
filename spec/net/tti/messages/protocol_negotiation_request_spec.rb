@@ -6,7 +6,7 @@ shared_examples_for "a ProtocolNegotiationRequest that functions properly" do
   it "should serialize properly" do
     kvp = Net::TTI::ProtocolNegotiationRequest.create_request()
     kvp.client_versions = versions if versions
-    expect(kvp.to_binary_s).to eql_binary_string(binary_string)
+    expect(kvp).to eql_binary_string(binary_string)
   end
 end
 
