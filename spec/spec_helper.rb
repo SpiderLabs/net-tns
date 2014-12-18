@@ -3,16 +3,20 @@ require "rspec/its"
 
 RSpec::Matchers.define :eql_binary_string do |expected|
   match do |actual|
+    actual = actual.to_binary_s if actual.respond_to?(:to_binary_s)
+    expected = expected.to_binary_s if expected.respond_to?(:to_binary_s)
     actual == expected
   end
 
   failure_message do |actual|
-      [
-        "  Expected: \"#{expected.tns_hexify}\"",
-        "       Got: \"#{actual.tns_hexify}\"",
-        # "  Expected: \"#{expected}\"",
-        # "       Got: \"#{actual}\"",
-      ].join("\n")
+    actual = actual.to_binary_s if actual.respond_to?(:to_binary_s)
+    expected = expected.to_binary_s if expected.respond_to?(:to_binary_s)
+    [
+      "  Expected: \"#{expected.tns_hexify}\"",
+      "       Got: \"#{actual.tns_hexify}\"",
+      # "  Expected: \"#{expected}\"",
+      # "       Got: \"#{actual}\"",
+    ].join("\n")
   end
 
   failure_message_when_negated do |actual|
@@ -67,6 +71,7 @@ module SpecHelpers
     end
 
     def _queue_response(data)
+      data = data.to_binary_s if data.respond_to?(:to_binary_s)
       @io_in.string << data
     end
 

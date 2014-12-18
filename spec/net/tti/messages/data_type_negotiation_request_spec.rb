@@ -5,7 +5,7 @@ require "net/tti/message"
 shared_examples_for "a DataTypeNegotiationRequest that functions properly" do
   it "should serialize properly" do
     kvp = Net::TTI::DataTypeNegotiationRequest.create_request(platform)
-    expect(kvp.to_binary_s).to eql_binary_string(binary_string)
+    expect(kvp).to eql_binary_string(binary_string)
   end
 end
 
