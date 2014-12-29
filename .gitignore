@@ -13,3 +13,5 @@
 .rspec
 
 Gemfile.lock
+
+coverage

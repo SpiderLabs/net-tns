@@ -1,3 +1,9 @@
+begin
+  require "coveralls"
+  Coveralls.wear!
+rescue LoadError
+end
+
 require "rspec"
 require "rspec/its"
 
