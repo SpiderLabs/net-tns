@@ -25,7 +25,7 @@ module Net
         @@tns_packet_types ||= {}
         if @@tns_packet_classes.has_key?(tns_type)
           existing_class = @@tns_packet_classes[tns_type]
-          raise("Duplicate TNS Types Defined: #{existing_class} and #{self} both have a type of #{tns_type}")
+          raise ArgumentError.new("Duplicate TNS Types Defined: #{existing_class} and #{self} both have a type of #{tns_type}")
         end
 
         @@tns_packet_classes[tns_type] = self
@@ -46,13 +46,16 @@ module Net
         end
 
         if header_raw.nil? || header_raw.length != Header::LENGTH
-          raise Exceptions::ProtocolException
+          header_length = header_raw.length unless header_raw.nil?
+          raise Exceptions::ProtocolException.new("Failed to read complete header. Read #{header_length.to_i} bytes.")
         end
 
         header = Header.new()
         header.read( header_raw )
         Net::TNS.logger.debug("Read header. Reported packet length is #{header.packet_length} bytes")
-        raise Exceptions::ProtocolException if header.packet_length > SESSION_DATA_UNIT_SIZE
+        if header.packet_length > SESSION_DATA_UNIT_SIZE
+          raise Exceptions::ProtocolException.new("Packet length in header (#{header.packet_length}) is longer than SDU size.")
+        end
 
         payload_raw = socket.read( header.packet_length - Header::LENGTH )
         packet_raw = header_raw + payload_raw
@@ -62,7 +65,7 @@ module Net
         end
 
         unless packet_raw.length == header.packet_length
-          raise Net::TNS::Exceptions::ProtocolException
+          raise Net::TNS::Exceptions::ProtocolException.new("Failed to read entire packet (read #{packet_raw.length} of #{header.packet_length} bytes).")
         end
 
         new_packet = payload_class.read( packet_raw )

@@ -23,7 +23,7 @@ module Net
 
       def find_param(key, raise_if_not_found=false)
         param = self.parameters.find {|p| p.kvp_key == key}
-        raise "No #{key} parameter found" if param.nil? && raise_if_not_found
+        raise Net::TTI::Exceptions::TTIException.new("No #{key} parameter found") if param.nil? && raise_if_not_found
         return param
       end
       private :find_param

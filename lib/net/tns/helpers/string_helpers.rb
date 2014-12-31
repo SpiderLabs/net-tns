@@ -17,7 +17,7 @@ module Net::TNS
       suf = (opts[:suffix] || "")
 
       if (rx=opts[:rx]) and not rx.kind_of? Regexp
-        raise "rx must be a regular expression for a character class"
+        raise ArgumentError.new("rx must be a regular expression")
       end
 
       out=Array.new
