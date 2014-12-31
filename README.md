@@ -36,6 +36,7 @@ require "net/tti" # requiring TTI is necessary to get the higher-level functiona
 tti_client = Net::TTI::Client.new
 tti_client.connect( :host => "10.0.0.10", :sid => "ORCL" )
 tti_client.authenticate( "jsmith", "bananas" ) # => true/false
+tti_client.disconnect
 ```
 
 ## Contribute
