@@ -22,7 +22,7 @@ module Net
         @@ttc_codes ||= {}
         if @@ttc_classes.has_key?(ttc_code)
           existing_class = @@ttc_classes[ttc_code]
-          raise("Duplicate TTC response handlers defined: #{existing_class} and #{self} both have TTC code of #{ttc_code}")
+          raise ArgumentError.new("Duplicate TTC response handlers defined: #{existing_class} and #{self} both have TTC code of #{ttc_code}")
         end
 
         @@ttc_classes[ttc_code] = self
