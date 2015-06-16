@@ -44,3 +44,6 @@ module Net
     end
   end
 end
+
+require "pathname"
+Dir.glob("#{Pathname.new(__FILE__).dirname}/function_calls/*.rb") { |file| require file }

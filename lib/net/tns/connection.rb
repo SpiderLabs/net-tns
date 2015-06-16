@@ -7,16 +7,17 @@ module Net
       attr_reader :tns_protocol_version
 
       def initialize(opts={})
-        opts = {
-          :port => 1521,
-        }.merge(opts)
-
         @socket = nil
-        @socket_opts = {}
-        socket_opts_keys = [:host, :port, :get_socket_callback, :close_socket_callback]
-        socket_opts_keys.each {|key| @socket_opts[key] = opts.delete(key) if opts.has_key?(key)}
+
+        @host = opts.delete(:host)
+        @port = opts.delete(:port) || 1521
+        @new_socket_proc = opts.delete(:new_socket_proc)
 
         raise ArgumentError.new("Unrecognized options: #{opts.keys}") unless opts.empty?
+
+        if @host.nil? == @new_socket_proc.nil?
+          raise ArgumentError.new("Invalid socket options. Need :host and :port, OR :new_socket_proc")
+        end
       end
 
       # This is a low-level function to directly open a socket for this connection.
@@ -26,19 +27,15 @@ module Net
         Net::TNS.logger.debug("Connection#open_socket called")
         close_socket()
 
-        if (host = @socket_opts[:host]) && (port = @socket_opts[:port])
-          if @socket_opts.has_key?(:get_socket_callback) || @socket_opts.has_key?(:close_socket_callback)
-            raise ArgumentError.new("Cannot specify :host/:port with :get_socket_callback/:close_socket_callback")
-          end
-
+        if @host
           require "socket"
-          Net::TNS.logger.info("Creating new TCPSocket for #{host}:#{port}")
-          @socket = TCPSocket.new(host, port)
-        elsif socket_cb = @socket_opts[:get_socket_callback]
-          Net::TNS.logger.info("Calling get-socket callback for new socket")
-          @socket = socket_cb.call()
+          Net::TNS.logger.info("Creating new TCPSocket for #{@host}:#{@port}")
+          @socket = TCPSocket.new(@host, @port)
+        elsif @new_socket_proc
+          Net::TNS.logger.info("Calling new-socket proc for new socket")
+          @socket = @new_socket_proc.call()
         else
-          raise ArgumentError.new("No valid options for socket creation. Need :host and :port, or :get_socket_callback (:close_socket_callback optional)")
+          raise ArgumentError.new("Invalid socket options")
         end
 
         return
@@ -50,16 +47,9 @@ module Net
       def close_socket
         Net::TNS.logger.debug("Connection#close_socket called")
         begin
-          unless @socket.nil?
-            if close_cb = @socket_opts[:close_socket_callback]
-              Net::TNS.logger.info("Calling close-socket callback to close socket")
-              close_cb.call(@socket)
-            else
-              unless @socket.closed?
-                Net::TNS.logger.info("Closing socket")
-                @socket.close
-              end
-            end
+          unless @socket.nil? or @socket.closed?
+            Net::TNS.logger.info("Closing socket")
+            @socket.close
           end
         ensure
           @socket = nil
@@ -143,7 +133,7 @@ module Net
 
       def resend_last_tns_packet
         if @tns_last_sent_packet.nil?
-          raise Exceptions::TnsException.new( "Resend received without a packet to resend" )
+          raise Exceptions::TNSException.new( "Resend received without a packet to resend" )
         end
         send_tns_packet( @tns_last_sent_packet )
       end
@@ -157,7 +147,7 @@ module Net
       # @return [Net::TNS::Packet]
       # @raise [Net::TNS::Exceptions::RefuseMessageReceived] If the other side
       #   sent TNS refuse message.
-      # @raise [Net::TNS::Exceptions::TnsException] If another unexpected
+      # @raise [Net::TNS::Exceptions::TNSException] If another unexpected
       #   state or action occurs.
       def receive_tns_packet( waiting_for_error_message = false )
         # This is structured as a loop in order to handle messages (e.g. Resends)
@@ -170,7 +160,7 @@ module Net
 
           receive_count += 1
           if ( receive_count >= 3 )
-            raise Exceptions::TnsException.new( "Maximum receive attempts exceeded - too many Resends received." )
+            raise Exceptions::TNSException.new( "Maximum receive attempts exceeded - too many Resends received." )
           end
 
           # Try to receive a TNS packet

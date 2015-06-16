@@ -4,7 +4,7 @@ require "net/tti/data_types"
 shared_examples_for "a ChunkedString that functions properly" do
   it "should serialize properly" do
     clr_string = Net::TTI::DataTypes::ChunkedString.new( data )
-    expect(clr_string.to_binary_s).to eql_binary_string( binary_string )
+    expect(clr_string).to eql_binary_string( binary_string )
   end
 
   it "should read properly" do

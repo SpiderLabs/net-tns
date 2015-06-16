@@ -18,23 +18,23 @@ module Net
 
 
         it "should properly serialize a request with no parameters" do
-          expect(subject.to_binary_s).to eql_binary_string( username_only1_x86 )
+          expect(subject).to eql_binary_string( username_only1_x86 )
 
           subject.username = "syst"
-          expect(subject.to_binary_s).to eql_binary_string( username_only2_x86 )
+          expect(subject).to eql_binary_string( username_only2_x86 )
         end
 
         it "should properly serialize a request with one parameter" do
           subject.add_parameter( "AUTH_TERMINAL", "TESTHOST-DY6BJ5" )
 
-          expect(subject.to_binary_s).to eql_binary_string( request1_x86 )
+          expect(subject).to eql_binary_string( request1_x86 )
         end
 
         it "should properly serialize a request with two parameters" do
           subject.add_parameter( "AUTH_TERMINAL", "TESTHOST-DY6BJ5" )
           subject.add_parameter( "AUTH_PROGRAM_NM", "sqlplus.exe" )
 
-          expect(subject.to_binary_s).to eql_binary_string( request2_x86 )
+          expect(subject).to eql_binary_string( request2_x86 )
         end
       end
     end

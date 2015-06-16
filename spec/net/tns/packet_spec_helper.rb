@@ -19,7 +19,7 @@ shared_examples_for "a TNS packet that can be properly created and sent" do
       subject.__send__(accessor, value)
     end
 
-    expect(subject.to_binary_s).to eql_binary_string( raw_packet )
+    expect(subject).to eql_binary_string( raw_packet )
   end
 end
 

@@ -1,4 +1,4 @@
-# Net::TNS for Ruby
+# Net::TNS for Ruby [![Build Status](https://travis-ci.org/SpiderLabs/net-tns.svg?branch=master)](https://travis-ci.org/SpiderLabs/net-tns) [![Coverage Status](https://img.shields.io/coveralls/SpiderLabs/net-tns.svg)](https://coveralls.io/r/SpiderLabs/net-tns?branch=master)
 
 Library for connecting to Oracle databases.
 
@@ -8,7 +8,7 @@ Net::TNS for Ruby is a partial implementation of the TNS (Transparent Network Su
 
 ## Requirements
 
-Net::TNS was written for and tested with Ruby 2, but it may be able to run on earlier versions. Net::TNS requires the Bindata gem.
+Net::TNS was written for and has been most tested with Ruby 2. The specs pass on 1.9.3, although their coverage is incomplete. It may be able to work with previous versions.
 
 ## Installation
 
@@ -16,9 +16,34 @@ Net::TNS was written for and tested with Ruby 2, but it may be able to run on ea
 
 ## Use
 
-Because TNS and TTI are highly related (and not very useful without the other), they are both implemented in this library, although in separate namespaces (```Net::TNS``` and ```Net::TTI```).  ```require "net/tti"``` is sufficient to load both protocols (```require "net/tns"``` will only load the TNS implementation).
+Because TNS and TTI are highly related (and not very useful without the other), they are both implemented in this library, although in separate namespaces, Net::TNS and Net::TTI (```require "net/tti"``` is sufficient to load both protocols, while ```require "net/tns"``` will only load the TNS implementation).
 
-Each namespace includes a Client class, which provides access to the essential functionality for that protocol. There are several scripts in bin that demonstrate basic use.
+Each namespace includes a Client class, which provides access to the essential functionality for that protocol.
+
+Examples:
+
+#### Get the version of an Oracle DB server
+
+```ruby
+require "net/tns" # require "net/tti" would work as well
+Net::TNS::Client.get_version(:host => "10.0.0.10") # => "11.2.0.2.0"
+```
+
+#### Try authenticating to a server
+
+```ruby
+require "net/tti" # requiring TTI is necessary to get the higher-level functionality
+tti_client = Net::TTI::Client.new
+tti_client.connect( :host => "10.0.0.10", :sid => "ORCL" )
+tti_client.authenticate( "jsmith", "bananas" ) # => true/false
+tti_client.disconnect
+```
+
+## Contribute
+
+Pull requests welcome! Once you've forked and cloned the project, you can ```bundle install``` to take care of the dependencies; after that, you're ready to code.
+
+You can also create issues for any bugs or feature requests, but they may take longer to get done, of course.
 
 ## Resources on TNS and TTI
 

@@ -22,7 +22,7 @@ module Net
         @@ttc_codes ||= {}
         if @@ttc_classes.has_key?(ttc_code)
           existing_class = @@ttc_classes[ttc_code]
-          raise("Duplicate TTC response handlers defined: #{existing_class} and #{self} both have TTC code of #{ttc_code}")
+          raise ArgumentError.new("Duplicate TTC response handlers defined: #{existing_class} and #{self} both have TTC code of #{ttc_code}")
         end
 
         @@ttc_classes[ttc_code] = self
@@ -34,7 +34,7 @@ module Net
         ttc_code = raw_message[0].unpack("C").first
 
         unless message_class = @@ttc_classes[ ttc_code ]
-          raise Net::TNS::Exceptions::TnsException.new( "Unknown TTC code: #{ttc_code}" )
+          raise Net::TNS::Exceptions::TNSException.new( "Unknown TTC code: #{ttc_code}" )
         end
 
         new_message = message_class.new
@@ -47,4 +47,4 @@ module Net
 end
 
 require "pathname"
-Dir.glob("#{Pathname.new(__FILE__).dirname}/messages/**/*.rb") { |file| require file }
+Dir.glob("#{Pathname.new(__FILE__).dirname}/messages/*.rb") { |file| require file }

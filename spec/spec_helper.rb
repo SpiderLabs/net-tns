@@ -1,18 +1,28 @@
+begin
+  require "coveralls"
+  Coveralls.wear!
+rescue LoadError
+end
+
 require "rspec"
 require "rspec/its"
 
 RSpec::Matchers.define :eql_binary_string do |expected|
   match do |actual|
+    actual = actual.to_binary_s if actual.respond_to?(:to_binary_s)
+    expected = expected.to_binary_s if expected.respond_to?(:to_binary_s)
     actual == expected
   end
 
   failure_message do |actual|
-      [
-        "  Expected: \"#{expected.tns_hexify}\"",
-        "       Got: \"#{actual.tns_hexify}\"",
-        # "  Expected: \"#{expected}\"",
-        # "       Got: \"#{actual}\"",
-      ].join("\n")
+    actual = actual.to_binary_s if actual.respond_to?(:to_binary_s)
+    expected = expected.to_binary_s if expected.respond_to?(:to_binary_s)
+    [
+      "  Expected: \"#{expected.tns_hexify}\"",
+      "       Got: \"#{actual.tns_hexify}\"",
+      # "  Expected: \"#{expected}\"",
+      # "       Got: \"#{actual}\"",
+    ].join("\n")
   end
 
   failure_message_when_negated do |actual|
@@ -25,14 +35,16 @@ module SpecHelpers
     class SocketClosed < StandardError; end
     class NoMoreData < StandardError; end
 
-    attr_accessor :dst_host
-    attr_accessor :dst_port
     def initialize( host="127.0.0.1", port=1521 )
       @dst_host = host
       @dst_port = port
       @io_out = StringIO.new()
       @io_in = StringIO.new()
       @closed = false
+    end
+
+    def peeraddr
+      return [nil, @dst_port, nil, @dst_host]
     end
 
     # Socket-like functions
@@ -59,7 +71,7 @@ module SpecHelpers
 
     # Administrative functions
     def _written_data
-      return @io_out.string.dup
+      return @io_out.string.dup.force_encoding("BINARY")
     end
 
     def _clear_written_data!
@@ -67,7 +79,8 @@ module SpecHelpers
     end
 
     def _queue_response(data)
-      @io_in.string << data
+      data = data.to_binary_s if data.respond_to?(:to_binary_s)
+      @io_in.string << data.force_encoding("BINARY")
     end
 
     def _has_unread_data?

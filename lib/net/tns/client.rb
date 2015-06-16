@@ -10,7 +10,7 @@ module Net
           return true
         rescue Exceptions::ConnectionClosed
           return false
-        rescue Exceptions::TnsException
+        rescue Exceptions::TNSException
           return true
         ensure
           conn.close_socket() unless conn.nil?
@@ -24,7 +24,7 @@ module Net
           request = ConnectPacket.new(:data => "(CONNECT_DATA=(COMMAND=VERSION))")
 
           response = conn.send_and_receive( request )
-          raise "Expected AcceptPacket in response" unless response.is_a?(AcceptPacket)
+          raise Exceptions::ProtocolException.new("Expected AcceptPacket in response (got #{response.class})") unless response.is_a?(AcceptPacket)
 
           version_data = response.data
         rescue Exceptions::RefuseMessageReceived => refuse_err
