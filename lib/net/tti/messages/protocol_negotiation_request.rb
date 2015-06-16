@@ -13,7 +13,7 @@ module Net
       end
       private :_ttc_code
 
-      def self.create_request(client_versions=[6], protocol_handler="IBMPC/WIN_NT-8.1.0")
+      def self.create_request(client_versions=[6], protocol_handler="Linuxi386/Linux-2.0.34-8.1.0")
         request = self.new
         request.client_versions = client_versions
         request.protocol_handler = protocol_handler
