@@ -39,7 +39,7 @@ module Net
         proto_nego_response.populate_connection_parameters( @conn_params )
 
         Net::TTI.logger.debug("Sending data type negotiation request")
-        dt_nego_request = DataTypeNegotiationRequest.create_request( @conn_params.platform )
+        dt_nego_request = DataTypeNegotiationRequest.create_request( @conn_params.platform, @conn_params.architecture )
         dt_nego_response_raw = send_and_receive( dt_nego_request )
 
         return nil

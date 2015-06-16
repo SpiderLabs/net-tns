@@ -9,6 +9,12 @@ module Net::TTI
     class UnsupportedTarget < TTIException
     end
 
+    class UnsupportedArchitecture < TTIException
+      def initialize( architecture )
+        super( "Unsupported architecture: #{architecture}" )
+      end
+    end
+
     class UnsupportedPlatform < UnsupportedTarget
       def initialize( platform )
         super( "Unsupported platform: #{platform}" )
