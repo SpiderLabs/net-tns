@@ -25,16 +25,24 @@ module Net
       def populate_connection_parameters( conn_params )
         conn_params.ttc_version = self.version
 
-        case self.protocol_handler
-        when "IBMPC/WIN_NT-8.1.0"
+        if self.protocol_handler.start_with?("IBMPC/WIN_NT-")
           conn_params.architecture = :x86
           conn_params.platform = :windows
-        when "Linuxi386/Linux-2.0.34-8.1.0"
+        elsif self.protocol_handler.start_with?("IBMPC/WIN_NT64")
+          conn_params.architecture = :x64
+          conn_params.platform = :windows        
+        elsif self.protocol_handler.start_with?("Linuxi386/Linux")
           conn_params.architecture = :x86
           conn_params.platform = :linux
-        when "x86_64/Linux 2.4.xx"
+        elsif self.protocol_handler.start_with?("x86_64/Linux")
           conn_params.architecture = :x64
           conn_params.platform = :linux
+        elsif self.protocol_handler.start_with?("Sun386i/SunOS")
+          conn_params.architecture = :x86
+          conn_params.platform = :solaris
+        elsif self.protocol_handler.start_with?("AMD64/SunOS")
+          conn_params.architecture = :x64
+          conn_params.platform = :solaris          
         else
           raise Net::TTI::Exceptions::UnsupportedPlatform.new( self.protocol_handler )
         end
