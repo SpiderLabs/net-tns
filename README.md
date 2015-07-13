@@ -32,10 +32,15 @@ Net::TNS::Client.get_version(:host => "10.0.0.10") # => "11.2.0.2.0"
 #### Try authenticating to a server
 
 ```ruby
+require "net/tns"
 require "net/tti" # requiring TTI is necessary to get the higher-level functionality
 tti_client = Net::TTI::Client.new
 tti_client.connect( :host => "10.0.0.10", :sid => "ORCL" )
-tti_client.authenticate( "jsmith", "bananas" ) # => true/false
+begin
+  tti_client.authenticate( "jsmith", "bananas" )
+rescue Net::TTI::Exceptions::InvalidCredentialsError
+  # Handle invalid credentials
+end
 tti_client.disconnect
 ```
 
