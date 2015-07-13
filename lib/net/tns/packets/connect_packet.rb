@@ -9,7 +9,7 @@ module Net
       uint16be  :minimum_version,   :initial_value => Net::TNS::Version::ALL_VERSIONS.min
       uint16be  :service_flags
       # session data unit size
-      uint16be  :sdu_size,          :initial_value => 0x0800
+      uint16be  :sdu_size,          :initial_value => 0x2000
       # maximum transmission data unit size
       uint16be  :maximum_tdu_size,  :initial_value => 0x7fff
       uint16be  :protocol_flags,    :initial_value => 0xc608

@@ -6,14 +6,24 @@ module Net
     class ConnectionParameters
       attr_accessor :platform
       attr_accessor :architecture
-      attr_accessor :ttc_version
+      attr_accessor :proSvrVer
+      attr_accessor :proSvrStr
       attr_accessor :tns_version
+      attr_accessor :svrCharSet
+      attr_accessor :svrFlags
+      attr_accessor :svrCompiletimeCapabilities
+      attr_accessor :svrRuntimeCapabilities
 
       def to_s
         return "Platform: #{@platform||nil}" +
           "; Architecture: #{@architecture||nil}" +
-          "; TTC? Version: #{@ttc_version||nil}" +
-          "; TNS Version: #{@tns_version||nil}"
+          "; TNS Version: #{@tns_version||nil}" +
+          "; Pro server version: #{@proSvrVer||nil}" +
+          "; Pro server string: #{@proSvrStr||nil}" +
+          "; Server character set: #{@svrCharSet||nil}" +
+          "; Server flags: #{@svrFlags||nil}" + 
+          "; Server Compiletime Capabilities: #{@svrCompiletimeCapabilities.unpack('C'*@svrCompiletimeCapabilities.length).collect {|x| x.to_s 16}||nil}" +
+          "; Server Runtime Capabilities: #{@svrRuntimeCapabilities.unpack('C'*@svrRuntimeCapabilities.length).collect {|x| x.to_s 16}||nil}"
       end
     end
 
@@ -39,7 +49,7 @@ module Net
         proto_nego_response.populate_connection_parameters( @conn_params )
 
         Net::TTI.logger.debug("Sending data type negotiation request")
-        dt_nego_request = DataTypeNegotiationRequest.create_request( @conn_params.platform, @conn_params.architecture )
+        dt_nego_request = DataTypeNegotiationRequest.create_request( @conn_params )
         dt_nego_response_raw = send_and_receive( dt_nego_request )
 
         return nil
@@ -61,7 +71,7 @@ module Net
         Net::TTI.logger.debug( "Connection#send_tti_message called with #{raw_message.length}-byte #{tti_message.class} message" )
 
         # Split the message into multiple packets if necessary
-        max_data = Net::TNS::DataPacket.max_data_length
+        max_data = @tns_connection.tns_sdu - 12 # 12 = 10 (HEADER) + 2 (FLAGS)
         raw_message.scan(/.{1,#{max_data}}/m).each do |raw_message_part|
           tns_packet = Net::TNS::DataPacket.new()
           tns_packet.data = raw_message_part
@@ -79,7 +89,7 @@ module Net
         while ( true )
           receive_count += 1
           if ( receive_count >= 3 )
-            raise Exceptions::TNSException.new( "Maximum receive attempts exceeded - too many Markers received." )
+            raise Exceptions::ProtocolException.new( "Maximum receive attempts exceeded - too many Markers received." )
           end
 
           Net::TTI.logger.debug("Attempting to receive packet (try ##{receive_count})")
@@ -90,7 +100,7 @@ module Net
             # carried into an additional packet. We wouldn't need to do this if
             # we could fully parse every message (or at least know lengths to
             # read). I'm looking at you, DataTypeNegotiationResponse.
-            if tns_packet.num_bytes > 2000
+            if tns_packet.num_bytes > 1900
               begin
                 max_message_length -= message_data.length
                 message_data += receive_tti_message(waiting_for_error_message, max_message_length)
@@ -130,7 +140,7 @@ module Net
 
         raw_response = receive_tti_message(true)
         response = Message.from_data_string(raw_response)
-
+        
         unless response.is_a?(ErrorMessage)
           raise Exceptions::ProtocolException.new( "Received #{response.class} instead of error message" )
         end

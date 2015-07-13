@@ -31,7 +31,7 @@ module Net
         begin
           pre_auth_request = get_pre_auth_request( username )
 
-          pre_auth_response_raw = @tti_conn.send_and_receive(pre_auth_request)
+          pre_auth_response_raw = @tti_conn.send_and_receive(pre_auth_request)          
           pre_auth_response = PreAuthenticationResponse.read(pre_auth_response_raw)
 
           auth_request = get_auth_request(username, password, pre_auth_response)
@@ -56,8 +56,11 @@ module Net
       end
 
       def get_pre_auth_request(username)
-        pre_auth_request = Authentication.create_pre_auth_request( @tti_conn.conn_params.architecture )
+        pre_auth_request = Authentication.create_pre_auth_request()
+        pre_auth_request.logon_mode_size = 1
+        pre_auth_request.logon_mode = Authentication::LOGON_MODE_PRE_AUTH
         pre_auth_request.username = username
+        pre_auth_request.add_parameter("AUTH_TERMINAL", "unknown")
         return pre_auth_request
       end
 
@@ -81,11 +84,13 @@ module Net
           raise Exceptions::UnsupportedTNSVersion.new( @tti_conn.conn_params.tns_version )
         end
 
-        auth_request = Authentication.create_auth_request( @tti_conn.conn_params.architecture )
+        auth_request = Authentication.create_auth_request()
+        auth_request.logon_mode_size = 2
+        auth_request.logon_mode = Authentication::LOGON_MODE_AUTH
         auth_request.username = username
-        auth_request.enc_client_session_key = enc_client_session_key
         auth_request.enc_password = enc_password
-
+        auth_request.add_parameter("AUTH_TERMINAL", "unknown")
+        auth_request.enc_client_session_key = enc_client_session_key
         return auth_request
       end
 
