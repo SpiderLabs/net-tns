@@ -32,8 +32,8 @@ module Net
 
       def self.from_data_string( raw_message )
         ttc_code = raw_message[0].unpack("C").first
-
-        unless message_class = @@ttc_classes[ ttc_code ]
+        
+        unless message_class = @@ttc_classes[ttc_code]
           raise Net::TNS::Exceptions::TNSException.new( "Unknown TTC code: #{ttc_code}" )
         end
 

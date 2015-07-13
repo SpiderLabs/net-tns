@@ -5,6 +5,7 @@ module Net
   module TNS
     class Connection
       attr_reader :tns_protocol_version
+      attr_reader :tns_sdu
 
       def initialize(opts={})
         @socket = nil
@@ -83,6 +84,7 @@ module Net
           return
         end
         @tns_protocol_version = response.version.to_i
+        @tns_sdu = response.sdu_size.to_i
         negotiate_ano()
       end
 

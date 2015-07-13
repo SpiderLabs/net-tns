@@ -3,8 +3,9 @@ require "net/tti/data_types"
 module Net
   module TTI
     class PreAuthenticationResponse < Message
-      uint16le  :parameter_count
-      array     :parameters, :type => :key_value_pair, :read_until => lambda {index == parameter_count-1}
+      uint8     :unknown1
+      uint8     :parameter_count
+      array     :parameters, :type => :key_value_pair, :read_until => lambda {index == parameter_count - 1}
 
       def _ttc_code
         return TTC_CODE_OK

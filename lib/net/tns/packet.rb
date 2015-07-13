@@ -13,7 +13,7 @@ module Net
     end
 
     class Packet < BinData::Record
-      SESSION_DATA_UNIT_SIZE = 2048
+      SESSION_DATA_UNIT_SIZE = 8192
       MAX_PAYLOAD_SIZE = SESSION_DATA_UNIT_SIZE - Header::LENGTH
 
       # BinData fields
