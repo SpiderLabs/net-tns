@@ -1,9 +1,9 @@
 require "net/tns"
 require "net/tti"
 tti_client = Net::TTI::Client.new
-tti_client.connect( :host => "utsol1.slab.prv", :sid => "orcl10g2" )
+tti_client.connect( :host => "hostname", :sid => "sid" )
 begin
-  tti_client.authenticate( "system", "admin123" )
+  tti_client.authenticate( "account", "password" )
   puts "Successfully connected."
 rescue Net::TTI::Exceptions::InvalidCredentialsError
   puts "Wrong credentials."
