@@ -5,31 +5,33 @@ module Net
   module TTI
     describe Authentication do
       auth_request = (
-        "037303feffffff0600000001010000feffffff02000000fefffffffeffffff06" +
-        "73797374656d0c0000000c415554485f534553534b4559400000004033373933" +
-        "3345304532443537333332433839463734413030454544313346423045313441" +
-        "3437433544373945353439313944433132463234394139463935304301000000" +
-        "0d0000000d415554485f50415353574f52444000000040304144313141414636" +
-        "3444413434354645384246323741313144343632343442314130323645353145" +
-        "413944393935303336373633324142444532443244453400000000" ).tns_unhexify
+        "037304010106020101010103010173797374656d010d0d415554485f50415353" +
+        "574f524401404046343638364543394337303541313145343930434337303031" +
+        "3431313038453431393136343130374643423342364237434431393346363045" +
+        "4532433235354600010d0d415554485f5445524d494e414c010707756e6b6e6f" +
+        "776e00010c0c415554485f534553534b45590140404332344242313730423644" +
+        "4635394431304239434439453835363841314334453342433438463946454438" +
+        "3338363933464136323035304231444332463937410101" ).tns_unhexify
 
       context "when serializing authentication messages" do
         subject {Authentication.new( :username => "system" )}
 
         before :each do
-          subject.sequence_number = 3 # Sequence number in example
+          subject.sequence_number = 4 # Sequence number in example
         end
 
         it "should properly serialize authentication request" do
-          subject.enc_client_session_key = "37933E0E2D57332C89F74A00EED13FB0E14A47C5D79E54919DC12F249A9F950C".tns_unhexify
-          subject.enc_password = "0AD11AAF64DA445FE8BF27A11D46244B1A026E51EA9D9950367632ABDE2D2DE4".tns_unhexify
+          subject.enc_password = "F4686EC9C705A11E490CC700141108E419164107FCB3B6B7CD193F60EE2C255F".tns_unhexify
+          subject.add_parameter("AUTH_TERMINAL", "unknown")
+          subject.enc_client_session_key = "C24BB170B6DF59D10B9CD9E8568A1C4E3BC48F9FED838693FA62050B1DC2F97A".tns_unhexify
 
           expect(subject).to eql_binary_string( auth_request )
         end
 
         it "should properly serialize authentication request when calling #add_parameter" do
-          subject.add_parameter( "AUTH_SESSKEY", "37933E0E2D57332C89F74A00EED13FB0E14A47C5D79E54919DC12F249A9F950C", 1 )
-          subject.add_parameter( "AUTH_PASSWORD", "0AD11AAF64DA445FE8BF27A11D46244B1A026E51EA9D9950367632ABDE2D2DE4" )
+          subject.add_parameter( "AUTH_PASSWORD", "F4686EC9C705A11E490CC700141108E419164107FCB3B6B7CD193F60EE2C255F" )
+          subject.add_parameter("AUTH_TERMINAL", "unknown")
+          subject.add_parameter( "AUTH_SESSKEY", "C24BB170B6DF59D10B9CD9E8568A1C4E3BC48F9FED838693FA62050B1DC2F97A", 1 )
 
           expect(subject).to eql_binary_string( auth_request )
         end
