@@ -8,10 +8,10 @@ module Net
       uint8     :unknown1,              :initial_value => 0x01
       uint8     :username_length_size,  :initial_value => 0x01
       uint8     :username_length,       :value => lambda { username.length }
-      uint8     :logon_mode_size,       :initial_value => 0x01
+      uint8     :logon_mode_size,       :initial_value => lambda { _logon_mode == Authentication::LOGON_MODE_PRE_AUTH ? 0x01: 0x02}
       choice    :logon_mode,            :selection => :_logon_mode do
-        uint8    LOGON_MODE_PRE_AUTH
-        uint16le LOGON_MODE_AUTH
+        uint8    LOGON_MODE_PRE_AUTH,   :initial_value => lambda { _logon_mode }
+        uint16le LOGON_MODE_AUTH,       :initial_value => lambda { _logon_mode }
       end
       uint8     :unused1,               :initial_value => 0x01
       uint8     :parameters_count_size, :initial_value => 0x01

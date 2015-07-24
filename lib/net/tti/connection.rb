@@ -100,12 +100,15 @@ module Net
             # carried into an additional packet. We wouldn't need to do this if
             # we could fully parse every message (or at least know lengths to
             # read). I'm looking at you, DataTypeNegotiationResponse.
+            # For 10g and older only
+            if @tns_connection.tns_protocol_version <= 313
             if tns_packet.num_bytes > 1900
               begin
                 max_message_length -= message_data.length
                 message_data += receive_tti_message(waiting_for_error_message, max_message_length)
               rescue Net::TNS::Exceptions::ReceiveTimeoutExceeded
                 Net::TTI.logger.debug("Hit receive timeout trying to read another Data packet")
+                end
               end
             end
 
