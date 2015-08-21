@@ -25,26 +25,25 @@ module Net
       def populate_connection_parameters( conn_params )
         conn_params.ttc_version = self.version
 
-        if self.protocol_handler.start_with?("IBMPC/WIN_NT-")
-          conn_params.architecture = :x86
-          conn_params.platform = :windows
-        elsif self.protocol_handler.start_with?("IBMPC/WIN_NT64")
-          conn_params.architecture = :x64
-          conn_params.platform = :windows        
-        elsif self.protocol_handler.start_with?("Linuxi386/Linux")
-          conn_params.architecture = :x86
-          conn_params.platform = :linux
-        elsif self.protocol_handler.start_with?("x86_64/Linux")
-          conn_params.architecture = :x64
-          conn_params.platform = :linux
-        elsif self.protocol_handler.start_with?("Sun386i/SunOS")
-          conn_params.architecture = :x86
-          conn_params.platform = :solaris
-        elsif self.protocol_handler.start_with?("AMD64/SunOS")
-          conn_params.architecture = :x64
-          conn_params.platform = :solaris          
+        protocol_handler_map = {
+          # (start of) protocol handler string => {params}
+          "IBMPC/WIN_NT-" => {:architecture => :x86, :platform => :windows},
+          "IBMPC/WIN_NT64" => {:architecture => :x64, :platform => :windows},
+          "Linuxi386/Linux" => {:architecture => :x86, :platform => :linux},
+          "x86_64/Linux" => {:architecture => :x64, :platform => :linux},
+          "Sun386i/SunOS" => {:architecture => :x86, :platform => :solaris},
+          "AMD64/SunOS" => {:architecture => :x64, :platform => :solaris},
+        }
+
+        ph_match, match_params = protocol_handler_map.find do |ph_start, params|
+          protocol_handler.start_with?(ph_start)
+        end
+
+        if ph_match
+          conn_params.architecture = match_params[:architecture]
+          conn_params.platform = match_params[:platform]
         else
-          raise Net::TTI::Exceptions::UnsupportedPlatform.new( self.protocol_handler )
+          raise Net::TTI::Exceptions::UnsupportedPlatform.new( protocol_handler )
         end
       end
     end
