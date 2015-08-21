@@ -27,12 +27,14 @@ end
 
 
 dictionary = [
-  "ORCL",
+  "CLRExtProc",
   "ORACLE",
   "ORADB",
-  "XE",
-  "TEST",
+  "ORCL",
   "PLSExtProc",
+  "TEST",
+  "XDB",
+  "XE"
 ]
 
 sids = Set.new

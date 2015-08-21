@@ -75,10 +75,13 @@ module Net
         end
 
         response = send_and_receive(connect_packet)
-        unless response.is_a?(AcceptPacket)
+        unless response.is_a?(AcceptPacket) || response.is_a?(RedirectPacket)
           raise Exceptions::ProtocolException.new("Unexpected response to Connect packet: #{response.class}")
         end
-
+        if response.is_a?(RedirectPacket)
+          # CLR extproc on 12c will end up here
+          return
+        end
         @tns_protocol_version = response.version.to_i
         negotiate_ano()
       end
