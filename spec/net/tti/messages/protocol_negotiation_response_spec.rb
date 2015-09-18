@@ -11,7 +11,7 @@ shared_examples_for "a ProtocolNegotiationResponse that reads properly" do
     response.populate_connection_parameters( subject )
   end
 
-  its(:proSvrVer) {should == version}
+  its(:ttc_version) {should == version}
   its(:architecture) {should == architecture}
   its(:platform) {should == platform}
 end

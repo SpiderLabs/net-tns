@@ -6,24 +6,24 @@ module Net
     class ConnectionParameters
       attr_accessor :platform
       attr_accessor :architecture
-      attr_accessor :proSvrVer
-      attr_accessor :proSvrStr
+      attr_accessor :ttc_version
+      attr_accessor :ttc_server
       attr_accessor :tns_version
-      attr_accessor :svrCharSet
-      attr_accessor :svrFlags
-      attr_accessor :svrCompiletimeCapabilities
-      attr_accessor :svrRuntimeCapabilities
+      attr_accessor :character_set
+      attr_accessor :server_flags
+      attr_accessor :server_compiletime_capabilities
+      attr_accessor :server_runtime_capabilities
 
       def to_s
         return "Platform: #{@platform||nil}" +
           "; Architecture: #{@architecture||nil}" +
           "; TNS Version: #{@tns_version||nil}" +
-          "; Pro server version: #{@proSvrVer||nil}" +
-          "; Pro server string: #{@proSvrStr||nil}" +
-          "; Server character set: #{@svrCharSet||nil}" +
-          "; Server flags: #{@svrFlags||nil}" + 
-          "; Server Compiletime Capabilities: #{@svrCompiletimeCapabilities.unpack('C'*@svrCompiletimeCapabilities.length).collect {|x| x.to_s 16}||nil}" +
-          "; Server Runtime Capabilities: #{@svrRuntimeCapabilities.unpack('C'*@svrRuntimeCapabilities.length).collect {|x| x.to_s 16}||nil}"
+          "; TTC server version: #{@ttc_version||nil}" +
+          "; TTC server string: #{@ttc_server||nil}" +
+          "; Server character set: #{@character_set||nil}" +
+          "; Server flags: #{@server_flags||nil}" +
+          "; Server Compiletime Capabilities: #{@server_compiletime_capabilities.unpack('C'*@server_compiletime_capabilities.length).collect {|x| x.to_s 16}||nil}" +
+          "; Server Runtime Capabilities: #{@server_runtime_capabilities.unpack('C'*@server_runtime_capabilities.length).collect {|x| x.to_s 16}||nil}"
       end
     end
 
@@ -143,7 +143,7 @@ module Net
 
         raw_response = receive_tti_message(true)
         response = Message.from_data_string(raw_response)
-        
+
         unless response.is_a?(ErrorMessage)
           raise Exceptions::ProtocolException.new( "Received #{response.class} instead of error message" )
         end
