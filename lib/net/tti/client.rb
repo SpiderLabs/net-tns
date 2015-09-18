@@ -68,8 +68,15 @@ module Net
         when Net::TNS::Version::VERSION_10G
           enc_password, enc_client_session_key = Net::TTI::Crypto.get_10g_auth_values( username, password, auth_sesskey )
         when Net::TNS::Version::VERSION_11G
-          auth_vfr_data = pre_auth_response.auth_vfr_data
-          enc_password, enc_client_session_key = Net::TTI::Crypto.get_11g_auth_values( password, auth_sesskey, auth_vfr_data )
+          case auth_sesskey.length
+          when 32
+            enc_password, enc_client_session_key = Net::TTI::Crypto.get_10g_auth_values( username, password, auth_sesskey )
+          when 48
+            auth_vfr_data = pre_auth_response.auth_vfr_data
+            enc_password, enc_client_session_key = Net::TTI::Crypto.get_11g_auth_values( password, auth_sesskey, auth_vfr_data )
+          else
+            raise Exceptions::ProtocolException.new("Unexpected AUTH_SESSKEY length #{auth_sesskey.length}")
+          end
         else
           raise Exceptions::UnsupportedTNSVersion.new( @tti_conn.conn_params.tns_version )
         end

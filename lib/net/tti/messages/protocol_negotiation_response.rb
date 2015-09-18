@@ -25,18 +25,25 @@ module Net
       def populate_connection_parameters( conn_params )
         conn_params.ttc_version = self.version
 
-        case self.protocol_handler
-        when "IBMPC/WIN_NT-8.1.0"
-          conn_params.architecture = :x86
-          conn_params.platform = :windows
-        when "Linuxi386/Linux-2.0.34-8.1.0"
-          conn_params.architecture = :x86
-          conn_params.platform = :linux
-        when "x86_64/Linux 2.4.xx"
-          conn_params.architecture = :x64
-          conn_params.platform = :linux
+        protocol_handler_map = {
+          # (start of) protocol handler string => {params}
+          "IBMPC/WIN_NT-" => {:architecture => :x86, :platform => :windows},
+          "IBMPC/WIN_NT64" => {:architecture => :x64, :platform => :windows},
+          "Linuxi386/Linux" => {:architecture => :x86, :platform => :linux},
+          "x86_64/Linux" => {:architecture => :x64, :platform => :linux},
+          "Sun386i/SunOS" => {:architecture => :x86, :platform => :solaris},
+          "AMD64/SunOS" => {:architecture => :x64, :platform => :solaris},
+        }
+
+        ph_match, match_params = protocol_handler_map.find do |ph_start, params|
+          protocol_handler.start_with?(ph_start)
+        end
+
+        if ph_match
+          conn_params.architecture = match_params[:architecture]
+          conn_params.platform = match_params[:platform]
         else
-          raise Net::TTI::Exceptions::UnsupportedPlatform.new( self.protocol_handler )
+          raise Net::TTI::Exceptions::UnsupportedPlatform.new( protocol_handler )
         end
       end
     end
