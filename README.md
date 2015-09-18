@@ -1,4 +1,4 @@
-# Net::TNS for Ruby [![Build Status](https://travis-ci.org/SpiderLabs/net-tns.svg?branch=master)](https://travis-ci.org/SpiderLabs/net-tns) [![Coverage Status](https://img.shields.io/coveralls/SpiderLabs/net-tns.svg)](https://coveralls.io/r/SpiderLabs/net-tns?branch=master)
+# Net::TNS for Ruby [![Build Status](https://travis-ci.org/SpiderLabs/net-tns.svg?branch=master)](https://travis-ci.org/SpiderLabs/net-tns) [![Coverage Status](https://coveralls.io/repos/SpiderLabs/net-tns/badge.svg?branch=master&service=github)](https://coveralls.io/github/SpiderLabs/net-tns?branch=master)
 
 Library for connecting to Oracle databases.
 
