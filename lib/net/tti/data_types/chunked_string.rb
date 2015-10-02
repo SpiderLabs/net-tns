@@ -47,6 +47,7 @@ module Net
               value_index += MAX_CHUNK_LENGTH
             end
             binary_string << [MULTI_CHUNK_TERMINATOR].pack("C")
+            return binary_string
           else
             return [value.length, value].pack("Ca*")
           end

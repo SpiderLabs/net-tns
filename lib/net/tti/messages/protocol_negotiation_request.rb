@@ -6,17 +6,17 @@ module Net
       # response, this will be the version the server chooses. These are a
       # concatenated string of version numbers (e.g. 060504).
       stringz   :client_versions_string
-      stringz   :protocol_handler
+      stringz   :client_string
 
       def _ttc_code
         TTC_CODE_PROTOCOL_NEGOTIATION
       end
       private :_ttc_code
 
-      def self.create_request(client_versions=[6], protocol_handler="Linuxi386/Linux-2.0.34-8.1.0")
+      def self.create_request(client_versions=[6, 5, 4, 3, 2, 1, 0], client_string = "Java_TTC-8.2.0")
         request = self.new
         request.client_versions = client_versions
-        request.protocol_handler = protocol_handler
+        request.client_string = client_string
 
         return request
       end

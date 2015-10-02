@@ -8,8 +8,6 @@ module TtiSpecHelper
   MSGS_DIR = File.join(SPEC_DIR, 'net', 'tti', 'raw')
 
   def self.read_message(filename)
-    dat = File.read(File.join(MSGS_DIR, filename))
-    dat.force_encoding('BINARY')
-    dat
+    File.open(File.join(MSGS_DIR, filename), "rb") {|f| f.read}
   end
 end

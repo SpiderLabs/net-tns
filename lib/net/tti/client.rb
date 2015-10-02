@@ -56,8 +56,9 @@ module Net
       end
 
       def get_pre_auth_request(username)
-        pre_auth_request = Authentication.create_pre_auth_request( @tti_conn.conn_params.architecture )
+        pre_auth_request = Authentication.create_pre_auth_request()
         pre_auth_request.username = username
+        pre_auth_request.add_parameter("AUTH_TERMINAL", "unknown")
         return pre_auth_request
       end
 
@@ -81,11 +82,11 @@ module Net
           raise Exceptions::UnsupportedTNSVersion.new( @tti_conn.conn_params.tns_version )
         end
 
-        auth_request = Authentication.create_auth_request( @tti_conn.conn_params.architecture )
+        auth_request = Authentication.create_auth_request()
         auth_request.username = username
-        auth_request.enc_client_session_key = enc_client_session_key
         auth_request.enc_password = enc_password
-
+        auth_request.enc_client_session_key = enc_client_session_key
+        auth_request.add_parameter("AUTH_TERMINAL", "unknown")
         return auth_request
       end
 
