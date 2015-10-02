@@ -7,8 +7,8 @@ shared_examples_for "a DataTypeNegotiationRequest that functions properly" do
     conn_params.ttc_version = 6
     conn_params.character_set = 0xb2
     conn_params.server_flags = 0x1
-    conn_params.server_compiletime_capabilities = "\x06\x01\x01\x01\x0f\x01\x01\x06\x01\x01\x01\x01\x01\x01\x01\x7f\xff\x03\n\x03\a\x01\x01\x7f\x01\x7f\xff\x01\t\x01\x01\xbf\x01\x05\x06\x00\x01\a\x04"
-    conn_params.server_runtime_capabilities = "\x02\x01\x00\x01\x18\x00\x03"
+    conn_params.server_compiletime_capabilities = Net::TTI::Capabilities.from_binary_string( "\x06\x01\x01\x01\x0f\x01\x01\x06\x01\x01\x01\x01\x01\x01\x01\x7f\xff\x03\n\x03\a\x01\x01\x7f\x01\x7f\xff\x01\t\x01\x01\xbf\x01\x05\x06\x00\x01\a\x04" )
+    conn_params.server_runtime_capabilities = Net::TTI::Capabilities.from_binary_string( "\x02\x01\x00\x01\x18\x00\x03")
     kvp = Net::TTI::DataTypeNegotiationRequest.create_request(conn_params)
     expect(kvp).to eql_binary_string(binary_string)
   end

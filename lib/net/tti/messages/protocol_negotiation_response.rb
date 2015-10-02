@@ -26,8 +26,8 @@ module Net
         conn_params.ttc_server = self.ttc_server
         conn_params.character_set = self.character_set
         conn_params.server_flags = self.server_flags
-        conn_params.server_compiletime_capabilities = server_compiletime_capabilities
-        conn_params.server_runtime_capabilities = server_runtime_capabilities
+        conn_params.server_compiletime_capabilities = Capabilities.from_binary_string( server_compiletime_capabilities )
+        conn_params.server_runtime_capabilities = Capabilities.from_binary_string( server_runtime_capabilities )
 
         ttc_server_map = {
           # (start of) protocol handler string => {params}

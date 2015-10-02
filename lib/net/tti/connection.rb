@@ -22,8 +22,8 @@ module Net
           "; TTC server string: #{@ttc_server||nil}" +
           "; Server character set: #{@character_set||nil}" +
           "; Server flags: #{@server_flags||nil}" +
-          "; Server Compiletime Capabilities: #{@server_compiletime_capabilities.unpack('C'*@server_compiletime_capabilities.length).collect {|x| x.to_s 16}||nil}" +
-          "; Server Runtime Capabilities: #{@server_runtime_capabilities.unpack('C'*@server_runtime_capabilities.length).collect {|x| x.to_s 16}||nil}"
+          "; Server Compiletime Capabilities: #{@server_compiletime_capabilities.to_hexified_s}" +
+          "; Server Runtime Capabilities: #{@server_runtime_capabilities.to_hexified_s}"
       end
     end
 
