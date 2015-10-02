@@ -31,7 +31,7 @@ module Net
         begin
           pre_auth_request = get_pre_auth_request( username )
 
-          pre_auth_response_raw = @tti_conn.send_and_receive(pre_auth_request)          
+          pre_auth_response_raw = @tti_conn.send_and_receive(pre_auth_request)
           pre_auth_response = PreAuthenticationResponse.read(pre_auth_response_raw)
 
           auth_request = get_auth_request(username, password, pre_auth_response)
@@ -57,8 +57,6 @@ module Net
 
       def get_pre_auth_request(username)
         pre_auth_request = Authentication.create_pre_auth_request()
-        pre_auth_request.logon_mode_size = 1
-        pre_auth_request.logon_mode = Authentication::LOGON_MODE_PRE_AUTH
         pre_auth_request.username = username
         pre_auth_request.add_parameter("AUTH_TERMINAL", "unknown")
         return pre_auth_request
@@ -85,12 +83,10 @@ module Net
         end
 
         auth_request = Authentication.create_auth_request()
-        auth_request.logon_mode_size = 2
-        auth_request.logon_mode = Authentication::LOGON_MODE_AUTH
         auth_request.username = username
         auth_request.enc_password = enc_password
-        auth_request.add_parameter("AUTH_TERMINAL", "unknown")
         auth_request.enc_client_session_key = enc_client_session_key
+        auth_request.add_parameter("AUTH_TERMINAL", "unknown")
         return auth_request
       end
 

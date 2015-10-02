@@ -8,7 +8,7 @@ module Net
       uint8     :unknown1,              :initial_value => 0x01
       uint8     :username_length_length, :initial_value => 0x01
       uint8     :username_length,       :value => lambda { username.length }
-      uint8     :logon_mode_length,     :initial_value => lambda { _logon_mode == Authentication::LOGON_MODE_PRE_AUTH ? 0x01: 0x02}
+      uint8     :logon_mode_length,     :initial_value => lambda { _logon_mode_length }
       choice    :logon_mode,            :selection => :_logon_mode do
         uint8    LOGON_MODE_PRE_AUTH,   :initial_value => lambda { _logon_mode }
         uint16le LOGON_MODE_AUTH,       :initial_value => lambda { _logon_mode }
@@ -28,6 +28,16 @@ module Net
 
       def _logon_mode
         return Authentication::LOGON_MODE_AUTH
+      end
+      private :_logon_mode
+
+      def _logon_mode_length
+        case _logon_mode
+        when Authentication::LOGON_MODE_PRE_AUTH
+          return 1
+        when Authentication::LOGON_MODE_AUTH
+          return 2
+        end
       end
       private :_logon_mode
 
