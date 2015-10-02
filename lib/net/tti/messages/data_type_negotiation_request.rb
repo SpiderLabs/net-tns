@@ -32,16 +32,16 @@ module Net
         request.character_set = conn_params.character_set
         request.client_flags = conn_params.server_flags
 
-        client_ct_caps = Capabilities.from_byte_array( [0x06, 0x01, 0x00, 0x00, 0x0a, 0x01, 0x01, 0x06, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x29, 0x90, 0x03, 0x07, 0x03, 0x00, 0x01, 0x00, 0x4f, 0x01, 0x37, 0x04, 0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x06, 0x00, 0x03, 0x83] )
-        client_rt_caps = Capabilities.from_byte_array( [0x02, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01] )
+        client_ct_caps = Capabilities.from_binary_string( "060100000a0101060101010101010029900307030001004f013704010000000c000006000383".tns_unhexify )
+        client_rt_caps = Capabilities.from_binary_string( "02010000000001".tns_unhexify )
 
         if(conn_params.server_runtime_capabilities.length <=1 or conn_params.server_runtime_capabilities[1] & 1 != 1)
-          client_rt_caps[1] &= -2
+          client_rt_caps[1] &= 254
         end
 
         if(conn_params.server_compiletime_capabilities.length <= 37 or conn_params.server_compiletime_capabilities[37] & 2 != 2)
-          client_rt_caps[1] &= -2
-          client_ct_caps[37] &= -3
+          client_rt_caps[1] &= 254
+          client_ct_caps[37] &= 253
         end
 
         if(conn_params.server_compiletime_capabilities.length <= 27 or conn_params.server_compiletime_capabilities[27] == 0)
@@ -52,9 +52,9 @@ module Net
         request.client_runtime_capabilities = client_rt_caps.to_binary_s
 
         if (client_rt_caps[1] & 1 == 1)
-          request.unknown1 = [0x80, 0x00, 0x00, 0x00, 0x3c, 0x3c, 0x80, 0x00, 0x00, 0x00, 0x00].pack('C*')
+          request.unknown1 = "800000003c3c8000000000".tns_unhexify
           if(client_ct_caps[37] & 2 == 2)
-            request.unknown2 = [0x00, 0x00, 0x00, 0x00].pack('C*')
+            request.unknown2 = "00000000".tns_unhexify
           end
         end
 
