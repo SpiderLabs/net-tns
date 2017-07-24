@@ -127,6 +127,10 @@ module Net
 
       # @param packet [Net::TNS::Packet]
       def send_tns_packet( packet )
+        if @socket.nil? || @socket.closed?
+          Net::TNS.logger.warn( "Can't send packet to a closed or nil socket!" )
+          return
+        end
         # Store this in case we get a Resend
         @tns_last_sent_packet = packet
         Net::TNS.logger.debug( "Sending packet #{packet.class} (#{packet.num_bytes} bytes)" )

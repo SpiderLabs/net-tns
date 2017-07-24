@@ -9,24 +9,24 @@ module Net::TTI
 
       context "when using AES-128-CBC" do
         it "should encrypt and decrypt to the original value" do
-          ciphertext = Crypto.openssl_encrypt( "AES-128-CBC", key, nil, plaintext, true )
-          decrypted_text = Crypto.openssl_decrypt( "AES-128-CBC", key, nil, ciphertext, true )
+          ciphertext = Crypto.openssl_encrypt( "AES-128-CBC", key.slice(0, 16), nil, plaintext, true )
+          decrypted_text = Crypto.openssl_decrypt( "AES-128-CBC", key.slice(0, 16), nil, ciphertext, true )
           expect(decrypted_text).to eql( plaintext )
         end
       end
 
       context "when using AES-192-CBC" do
         it "should encrypt and decrypt to the original value" do
-          ciphertext = Crypto.openssl_encrypt( "AES-192-CBC", key, nil, plaintext, true )
-          decrypted_text = Crypto.openssl_decrypt( "AES-192-CBC", key, nil, ciphertext, true )
+          ciphertext = Crypto.openssl_encrypt( "AES-192-CBC", key.slice(0, 24), nil, plaintext, true )
+          decrypted_text = Crypto.openssl_decrypt( "AES-192-CBC", key.slice(0, 24), nil, ciphertext, true )
           expect(decrypted_text).to eql( plaintext )
         end
       end
 
       context "when using DES-CBC" do
         it "should encrypt and decrypt to the original value" do
-          ciphertext = Crypto.openssl_encrypt( "DES-CBC", key, nil, plaintext, true )
-          decrypted_text = Crypto.openssl_decrypt( "DES-CBC", key, nil, ciphertext, true )
+          ciphertext = Crypto.openssl_encrypt( "DES-CBC", key.slice(0, 8), nil, plaintext, true )
+          decrypted_text = Crypto.openssl_decrypt( "DES-CBC", key.slice(0, 8), nil, ciphertext, true )
           expect(decrypted_text).to eql( plaintext )
         end
       end
@@ -136,7 +136,7 @@ module Net::TTI
             key          = "31b22dc665e423e03a88c112c3a09c81487458df684897d1e9749cfe8d4704f828f642bde4abf5ca".tns_unhexify
             iv           = "8020400408021001".tns_unhexify
 
-            password_enc = Crypto.openssl_encrypt( "DES-EDE3-CBC", key, iv, password_obf, true )
+            password_enc = Crypto.openssl_encrypt( "DES-EDE3-CBC", key.slice(0, 24), iv, password_obf, true )
             expect(password_enc[0,16]).to eql( password_enc_known )
           end
         end
