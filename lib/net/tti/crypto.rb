@@ -152,7 +152,7 @@ module Net::TTI
 
     # Helper function for encryption.
     def self.openssl_encrypt( cipher, key, iv, data, padding=false )
-      cipher = OpenSSL::Cipher::Cipher.new( cipher )
+      cipher = OpenSSL::Cipher.new( cipher )
       cipher.encrypt
       cipher.key = key
       cipher.iv = iv unless iv.nil?
@@ -163,7 +163,7 @@ module Net::TTI
 
     # Helper function for decryption.
     def self.openssl_decrypt( cipher, key, iv, data, padding=false )
-      cipher = OpenSSL::Cipher::Cipher.new( cipher )
+      cipher = OpenSSL::Cipher.new( cipher )
       cipher.decrypt
       cipher.key = key
       cipher.iv = iv unless iv.nil?
