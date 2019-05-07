@@ -8,7 +8,7 @@ module Net
       describe "::parse_vsnnum" do
         context "when provided a valid VSNNUM string" do
           it "should return the correct version" do
-            expect(Client.parse_vsnnum(vsnnum)).to eql?('18.0.0.0.0')
+            expect(Client.parse_vsnnum(vsnnum)).to eql('18.0.0.0.0')
           end
         end
         context "when provided a non-string" do
