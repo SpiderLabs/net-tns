@@ -83,7 +83,7 @@ module Net
         vsnnum_decimal = vsnnum_string.to_i
 
         version_components = []
-        version_components << (( vsnnum_decimal >> 24 ) & 0xF)
+        version_components << (( vsnnum_decimal >> 24 ) & 0xFF)
         version_components << (( vsnnum_decimal >> 20 ) & 0xF)
         version_components << (( vsnnum_decimal >> 16 ) & 0xF)
         version_components << (( vsnnum_decimal >>  8 ) & 0xFF)
